@@ -2,14 +2,23 @@ package com.ivanova.parsers;
 
 import com.ivanova.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class FlightParser implements Parser<Flight, String[]> {
+
+    Parser<Integer, String> integerParser;
+    Parser<Boolean, String> booleanParser;
+    Parser<FlightTimeDetails, String[]> flightTimeDetailsParser;
+
+    public FlightParser() {
+        integerParser = new IntegerParser();
+        booleanParser = new BooleanParser();
+        flightTimeDetailsParser = new FlightTimeDetailsParser();
+    }
 
     @Override
     public Flight parse(String[] input) {
-        IntegerParser integerParser = new IntegerParser();
-        BooleanParser booleanParser = new BooleanParser();
-        FlightTimeDetailsParser flightTimeDetailsParser = new FlightTimeDetailsParser();
-
         FlightTimeDetails flightTimeDetails = flightTimeDetailsParser.parse(input);
 
         int originAirportId = integerParser.parse(input[ColumnHeaders.ORIGIN_AIRPORT_ID.ordinal()]);

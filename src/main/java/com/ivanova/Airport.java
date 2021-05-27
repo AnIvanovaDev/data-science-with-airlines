@@ -1,19 +1,15 @@
 package com.ivanova;
 
-public class Airport {
+public class Airport  implements Corruptable{
     private int id;
-
-    @Override
-    public String toString() {
-        return "Airport{" +
-                "id=" + id +
-                ", shortcut='" + shortcut + '\'' +
-                ", stateName='" + stateName + '\'' +
-                '}';
-    }
-
     private String shortcut;
     private String stateName;
+
+    public Airport(int id, String shortcut, String stateName) {
+        this.id = id;
+        this.shortcut = shortcut;
+        this.stateName = stateName;
+    }
 
     public int getId() {
         return id;
@@ -27,8 +23,18 @@ public class Airport {
         return stateName;
     }
 
-    private Airport() {
+    @Override
+    public String toString() {
+        return "Airport{" +
+                "id=" + id +
+                ", shortcut='" + shortcut + '\'' +
+                ", stateName='" + stateName + '\'' +
+                '}';
+    }
 
+    @Override
+    public boolean isCorrupted() {
+        return (id == Integer.MIN_VALUE || shortcut == null || stateName == null);
     }
 
     public static class Builder {
@@ -40,21 +46,19 @@ public class Airport {
             this.id = id;
             return this;
         }
+
         public Builder addShortcut(String shortcut) {
             this.shortcut = shortcut;
             return this;
         }
+
         public Builder addStateName(String stateName) {
             this.stateName = stateName;
             return this;
         }
 
         public Airport build() {
-            Airport airport = new Airport();
-            airport.id = this.id;
-            airport.shortcut = this.shortcut;
-            airport.stateName = this.stateName;
-            return airport;
+            return new Airport(id, shortcut, stateName);
         }
     }
 }

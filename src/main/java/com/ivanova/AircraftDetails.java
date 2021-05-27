@@ -1,6 +1,26 @@
 package com.ivanova;
 
-public class AircraftDetails {
+public class AircraftDetails implements Corruptable {
+
+    private String uniqueCarrier;
+    private String tailNum;
+
+    private AircraftDetails(String uniqueCarrier, String tailNum) {
+        this.uniqueCarrier = uniqueCarrier;
+        this.tailNum = tailNum;
+    }
+
+    public String getUniqueCarrier() {
+        return uniqueCarrier;
+    }
+    public String getTailNum() {
+        return tailNum;
+    }
+
+    @Override
+    public boolean isCorrupted() {
+        return (uniqueCarrier == null || tailNum == null);
+    }
 
     @Override
     public String toString() {
@@ -8,21 +28,6 @@ public class AircraftDetails {
                 "uniqueCarrier='" + uniqueCarrier + '\'' +
                 ", tailNum='" + tailNum + '\'' +
                 '}';
-    }
-
-    private String uniqueCarrier;
-    private String tailNum;
-
-
-    public String getUniqueCarrier() {
-        return uniqueCarrier;
-    }
-
-    public String getTailNum() {
-        return tailNum;
-    }
-    private AircraftDetails() {
-
     }
 
     public static class Builder {
@@ -41,10 +46,7 @@ public class AircraftDetails {
         }
 
         public AircraftDetails build() {
-            AircraftDetails aircraftDetails = new AircraftDetails();
-            aircraftDetails.uniqueCarrier = this.uniqueCarrier;
-            aircraftDetails.tailNum = this.tailNum;
-            return aircraftDetails;
+            return new AircraftDetails(uniqueCarrier, tailNum);
         }
     }
 }

@@ -4,6 +4,32 @@ public class Flight {
     private FlightTimeDetails timeDetails;
     private Airport originAirport;
     private Airport destAirport;
+    private AircraftDetails aircraftDetails;
+    private boolean isCanceled;
+    private CancellationCode cancellationCode;
+    private boolean isDiverted;
+
+    private Flight(FlightTimeDetails timeDetails,
+                   Airport originAirport,
+                   Airport destAirport,
+                   AircraftDetails aircraftDetails,
+                   boolean isCanceled,
+                   CancellationCode cancellationCode,
+                   boolean isDiverted,
+                   int distanceInMiles) {
+
+        this.timeDetails = timeDetails;
+        this.originAirport = originAirport;
+        this.destAirport = destAirport;
+        this.aircraftDetails = aircraftDetails;
+        this.isCanceled = isCanceled;
+        this.cancellationCode = cancellationCode;
+        this.isDiverted = isDiverted;
+        this.distanceInMiles = distanceInMiles;
+    }
+
+    private int distanceInMiles;
+
 
     @Override
     public String toString() {
@@ -19,11 +45,6 @@ public class Flight {
                 '}';
     }
 
-    private AircraftDetails aircraftDetails;
-    private boolean isCanceled;
-    private CancellationCode cancellationCode;
-    private boolean isDiverted;
-    private int distanceInMiles;
 
     public FlightTimeDetails getTimeDetails() {
         return timeDetails;
@@ -57,11 +78,26 @@ public class Flight {
         return distanceInMiles;
     }
 
-    private Flight() {
+    public boolean isCorrupted() {
+            if(!checkCancellation()) {
+                return timeDetails.isCorrupted()
+                        || originAirport.isCorrupted()
+                        || destAirport.isCorrupted()
+                        || aircraftDetails.isCorrupted()
+                        || distanceInMiles == Integer.MIN_VALUE
+                        || cancellationCode != CancellationCode.NONE;
+            }
+
+           return cancellationCode == CancellationCode.NONE
+                   || this.timeDetails.getDepTime() != null
+                   || this.timeDetails.getArrTime() !=null;
     }
 
-    public boolean isCorrupted() {
-        return false; // TODO: implement logic later
+    public boolean checkCancellation() {
+        return this.isCanceled
+                && cancellationCode != CancellationCode.NONE
+                && this.timeDetails.getDepTime() == null
+                && this.timeDetails.getArrTime() == null ;
     }
 
     public static class Builder {
@@ -116,16 +152,14 @@ public class Flight {
         }
 
         public Flight build() {
-            Flight flight = new Flight();
-            flight.timeDetails = this.timeDetails;
-            flight.originAirport = this.originAirport;
-            flight.destAirport = this.destAirport;
-            flight.aircraftDetails = this.aircraftDetails;
-            flight.isCanceled = this.isCanceled;
-            flight.cancellationCode = this.cancellationCode;
-            flight.isDiverted = this.isDiverted;
-            flight.distanceInMiles = this.distanceInMiles;
-            return flight;
+            return new Flight(timeDetails,
+                                       originAirport,
+                                       destAirport,
+                                       aircraftDetails,
+                                       isCanceled,
+                                       cancellationCode,
+                                       isDiverted,
+                                       distanceInMiles);
         }
 
     }

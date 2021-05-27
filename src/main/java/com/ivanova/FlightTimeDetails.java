@@ -3,7 +3,7 @@ package com.ivanova;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class FlightTimeDetails {
+public class FlightTimeDetails  implements Corruptable{
     private LocalDate flightDate;
     private LocalTime depTime;
     private int depDelayInMinutes;
@@ -12,6 +12,24 @@ public class FlightTimeDetails {
     private LocalTime wheelsOff;
     private LocalTime wheelsOn;
     private int airTimeInMinutes;
+
+    private FlightTimeDetails(LocalDate flightDate,
+                              LocalTime depTime,
+                              int depDelayInMinutes,
+                              LocalTime arrTime,
+                              int arrDelayInMinutes,
+                              LocalTime wheelsOff,
+                              LocalTime wheelsOn,
+                              int airTimeInMinutes) {
+        this.flightDate = flightDate;
+        this.depTime = depTime;
+        this.depDelayInMinutes = depDelayInMinutes;
+        this.arrTime = arrTime;
+        this.arrDelayInMinutes = arrDelayInMinutes;
+        this.wheelsOff = wheelsOff;
+        this.wheelsOn = wheelsOn;
+        this.airTimeInMinutes = airTimeInMinutes;
+    }
 
     public LocalDate getFlightDate() {
         return flightDate;
@@ -45,10 +63,6 @@ public class FlightTimeDetails {
         return airTimeInMinutes;
     }
 
-    private FlightTimeDetails() {
-
-    }
-
     @Override
     public String toString() {
         return "FlightTimeDetails{" +
@@ -61,6 +75,18 @@ public class FlightTimeDetails {
                 ", wheelsOn=" + wheelsOn +
                 ", airTimeInMinutes=" + airTimeInMinutes +
                 '}';
+    }
+
+    @Override
+    public boolean isCorrupted() {
+        return (flightDate == null
+                || depTime == null
+                || depDelayInMinutes == Integer.MIN_VALUE
+                || arrTime == null
+                || arrDelayInMinutes == Integer.MIN_VALUE
+                || wheelsOff == null
+                || wheelsOn == null
+                || airTimeInMinutes == Integer.MIN_VALUE);
     }
 
     public static class Builder {
@@ -114,16 +140,14 @@ public class FlightTimeDetails {
         }
 
         public FlightTimeDetails build() {
-            FlightTimeDetails flightTimeDetails = new FlightTimeDetails();
-            flightTimeDetails.flightDate = this.flightDate;
-            flightTimeDetails.depTime = this.depTime;
-            flightTimeDetails.depDelayInMinutes = this.depDelayInMinutes;
-            flightTimeDetails.arrTime = this.arrTime;
-            flightTimeDetails.arrDelayInMinutes = this.arrDelayInMinutes;
-            flightTimeDetails.wheelsOff = this.wheelsOff;
-            flightTimeDetails.wheelsOn = this.wheelsOn;
-            flightTimeDetails.airTimeInMinutes = this.airTimeInMinutes;
-            return flightTimeDetails;
+            return  new FlightTimeDetails(flightDate,
+                                          depTime,
+                                          depDelayInMinutes,
+                                          arrTime,
+                                          arrDelayInMinutes,
+                                          wheelsOff,
+                                          wheelsOn,
+                                          airTimeInMinutes);
         }
     }
 }
