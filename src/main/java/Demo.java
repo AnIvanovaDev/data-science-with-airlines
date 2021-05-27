@@ -9,6 +9,7 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Demo {
@@ -29,34 +30,28 @@ public class Demo {
         Map<Boolean, List<Flight>> flightsByCancellation = properFlights.stream().collect(Collectors.groupingBy(Flight::checkCancellation));
         List<Flight> canceledFlights = flightsByCancellation.get(true);
         List<Flight> finishedFlights = flightsByCancellation.get(false);
-        //FileWriter.write("corrupted_flights", corruptedFlights);
-        //FileWriter.write("proper_flights", properFlights);
-        //FileWriter.write("canceled_flights", canceledFlights);
-        //FileWriter.write("finished_flights", finishedFlights);
-        //1.-----------------------------------------------
-        //canceledFlights.stream().collect(Collectors.groupingBy(f-> f.getAircraftDetails().getUniqueCarrier()));
 
-        Map<String, Map<Boolean, List<Flight>>> flightsByCompanyThenCancellationState = properFlights.stream()
-                .collect(Collectors
-                        .groupingBy(f -> f.getAircraftDetails().getUniqueCarrier(), Collectors.groupingBy(f -> f.checkCancellation())));
+        //1-------------------------------------------------
+        System.out.println(findCompanyWithHighestPercentOfCancelledFlights(properFlights));
 
-        Optional<Map.Entry<String, Double>> max = flightsByCompanyThenCancellationState
-                .entrySet()
-                .stream()
-                .map(Demo::apply)
-                .max(Map.Entry.comparingByValue());
-
-        max.ifPresent(System.out::println);
     }
 
-    private static Map.Entry<String, Double> apply(Map.Entry<String, Map<Boolean, List<Flight>>> entry) {
-        String key = entry.getKey();
-        Map<Boolean, List<Flight>> map = entry.getValue();
-        List<Flight> cancelledFl = map.get(Boolean.TRUE);
-        List<Flight> finishedFl = map.get(Boolean.FALSE);
-        int canceled = cancelledFl.size();
-        int finished = finishedFl.size();
-        double canceledPart = canceled /(double)(canceled + finished) * 100;
-        return new AbstractMap.SimpleEntry<>(key, canceledPart);
+    //1.
+    public static AbstractMap.SimpleEntry<String, Double> findCompanyWithHighestPercentOfCancelledFlights(List<Flight> source) {
+        return source.stream()
+                     .collect(Collectors.groupingBy(f -> f.getAircraftDetails().getUniqueCarrier(), Collectors.groupingBy(f -> f.checkCancellation())))
+                     .entrySet()
+                     .stream()
+                     .map((e)-> {
+                         Map<Boolean, List<Flight>> map = e.getValue();
+                         List<Flight> cancelledFl = map.get(Boolean.TRUE);
+                         List<Flight> finishedFl = map.get(Boolean.FALSE);
+                         int canceled = cancelledFl.size();
+                         int finished = finishedFl.size();
+                         double canceledPart = Math.round(canceled * 10000 /(double)(canceled + finished))/100.0;
+                         return new AbstractMap.SimpleEntry<>(e.getKey(), canceledPart);
+                     })
+                     .max(Map.Entry.comparingByValue())
+                     .orElseGet(()-> new AbstractMap.SimpleEntry<>("", 0.0));
     }
 }
