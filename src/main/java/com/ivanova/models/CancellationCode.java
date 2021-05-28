@@ -1,4 +1,4 @@
-package com.ivanova;
+package com.ivanova.models;
 
 import java.util.Arrays;
 import java.util.Map;

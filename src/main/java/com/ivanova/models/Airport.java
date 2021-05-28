@@ -1,6 +1,6 @@
-package com.ivanova;
+package com.ivanova.models;
 
-public class Airport  implements Corruptable{
+public class Airport  implements Corruptable {
     private int id;
     private String shortcut;
     private String stateName;

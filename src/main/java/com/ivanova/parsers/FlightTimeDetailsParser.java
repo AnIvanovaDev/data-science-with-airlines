@@ -1,7 +1,7 @@
 package com.ivanova.parsers;
 
-import com.ivanova.ColumnHeaders;
-import com.ivanova.FlightTimeDetails;
+import com.ivanova.models.ColumnHeaders;
+import com.ivanova.models.FlightTimeDetails;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,9 +1,9 @@
-package com.ivanova;
+package com.ivanova.models;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class FlightTimeDetails  implements Corruptable{
+public class FlightTimeDetails  implements Corruptable {
     private LocalDate flightDate;
     private LocalTime depTime;
     private int depDelayInMinutes;

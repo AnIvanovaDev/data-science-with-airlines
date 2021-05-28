@@ -1,9 +1,11 @@
 package com.ivanova.parsers;
 
-import com.ivanova.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ivanova.models.AircraftDetails;
+import com.ivanova.models.Airport;
+import com.ivanova.models.CancellationCode;
+import com.ivanova.models.ColumnHeaders;
+import com.ivanova.models.Flight;
+import com.ivanova.models.FlightTimeDetails;
 
 public final class FlightParser implements Parser<Flight, String[]> {
 
